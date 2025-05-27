@@ -1,5 +1,3 @@
-# robot-arm-model
-
 # Sterowanie Ramieniem Robota - Model AADL
 
 ## Dane Studenta
