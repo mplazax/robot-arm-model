@@ -18,13 +18,6 @@ System sterowania ramieniem robota jest zaprojektowany do precyzyjnego i bezpiec
 
 
 
-## Model - rysunek
-
-![Ramię Robota Przemysłowego](https://private-us-east-1.manuscdn.com/sessionFile/hU7BaqUKIpTrtjPs0pAJIU/sandbox/B4FxiAMLZL4UIf7F725ho6-images_1749548171631_na1fn_L2hvbWUvdWJ1bnR1L3JvYm90X2FybQ.png?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvaFU3QmFxVUtJcFRydGpQczBwQUpJVS9zYW5kYm94L0I0RnhpQU1MWkw0VUlmN0Y3MjVobzYtaW1hZ2VzXzE3NDk1NDgxNzE2MzFfbmExZm5fTDJodmJXVXZkV0oxYm5SMUwzSnZZbTkwWDJGeWJRLnBuZyIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc2NzIyNTYwMH19fV19&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=jY2l4XVrfK1kGpbsFv42Dqp74tb8YAc2BscWIi-SYeVb8t3ydTfxkZwKaRylUhpON9iqHI47Kn7NqVAIrzR4Juvn3LeKgx2IWsdz1PtT748-E0Wrojs90T1NyXnhhEIc43dyEwAv7dUye7Yp2imTJ8G4dIt66CfYuB5GNiZDVm~wDOZ-Kj48gpeCVW4KbJx7vdAo~eJkcyrk~nXGy7LagCJDMb4x38ciO8y39ZvTpzvriCkg5EsTkVsevUq3e9rVWZIP9sodDbu7AxkagvN2nU6fmvP3Z8ryYuH~3LV5G2EvJq42QzlElTTtTmDCrFm1lTvSVVr8g22uVQRvKD3Oug__)
-
-
-
-
 ## Spis komponentów AADL z komentarzem
 
 Pełny model AADL znajduje się w pliku `RobotArmControlSystem.aadl`. Poniżej przedstawiono kluczowe komponenty wraz z ich opisem:
@@ -62,9 +55,16 @@ Pełny model AADL znajduje się w pliku `RobotArmControlSystem.aadl`. Poniżej p
 ### Implementacja Systemu (System Implementation)
 - **`RobotArmControlSystem_i`**: Jest to implementacja systemu, która łączy wszystkie zdefiniowane komponenty (wątki, urządzenia) za pomocą połączeń danych i zdarzeń. Odzwierciedla architekturę systemu sterowania ramieniem robota, pokazując przepływ danych i interakcje między modułami.
 
-## Model - rysunek
 
-![Schemat Systemu Sterowania Ramieniem Robota](https://private-us-east-1.manuscdn.com/sessionFile/hU7BaqUKIpTrtjPs0pAJIU/sandbox/B4FxiAMLZL4UIf7F725ho6-images_1749548171631_na1fn_L2hvbWUvdWJ1bnR1L3JvYm90X2FybV9jb250cm9sX3N5c3RlbV9kaWFncmFt.png?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvaFU3QmFxVUtJcFRydGpQczBwQUpJVS9zYW5kYm94L0I0RnhpQU1MWkw0VUlmN0Y3MjVobzYtaW1hZ2VzXzE3NDk1NDgxNzE2MzFfbmExZm5fTDJodmJXVXZkV0oxYm5SMUwzSnZZbTkwWDJGeWJWOWpiMjUwY205c1gzTjVjM1JsYlY5a2FXRm5jbUZ0LnBuZyIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc2NzIyNTYwMH19fV19&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=N8YLjaABiyqvztzf5q66KlT4kD9OKgTVHAG8Z53PvyBaGWosZoVK5XiPjtRY-Sqlk1~38-La4SrMg9sRHllvJzZBFewEtnHxcPfx5yUCsSBlM8YBoiHWRW-MOvg0Tlx9nKvkEA8iozQiPzpOh9nWWEgpDlmLugwhSlecoL3XEDVZhjbNhGIXbz1C6K~OF01iU3JDb6Nvt-xqlMMsJiIRsNRswNpBGFc3fF2SFY7HcHgcMYiIMe52bevUsLqCA7S~iAFjjsPiNhA~R8pJGH2wmzgYloN5wfEkCgu2rWG~tMoYlpYUO1q3TkFNEGNut4qB4cg-z4ldDIt1~WMUFW2CsA__)
+## Model - diagramy
+
+![Schemat 1](Screenshot 2025-06-10 at 13.27.01.png)
+
+![Schemat 2](Screenshot 2025-06-10 at 13.27.11.png)
+
+![Schemat 3](Screenshot 2025-06-10 at 13.27.20.png)
+
+![Schemat 4](Screenshot 2025-06-10 at 13.27.26.png)
 
 
 
