@@ -1,78 +1,197 @@
-# Sprawozdanie - Projekt Systemu Czasu Rzeczywistego Sterowania Ramieniem Robota w AADL
+# **Model Architektury Systemu Czasu Rzeczywistego dla Ramienia Robota**
 
-## Tytuł modelu
-System Czasu Rzeczywistego Sterowania Ramieniem Robota
+*   **Imię i nazwisko:** `Michał Plaza`
+*   **E-mail:** `plazamichal@student.agh.edu.pl`
 
-## Dane studenta
-Imię i Nazwisko: Michał Plaza
-E-mail: plazamichal@student.agh.edu.pl
+---
 
-## Opis modelowanego systemu
+## **Opis Modelowanego Systemu**
 
-### Opis ogólny
-Niniejsze sprawozdanie przedstawia projekt systemu czasu rzeczywistego sterowania ramieniem robota, zamodelowanego przy użyciu Architecture Analysis and Design Language (AADL) w środowisku OSATE. Celem projektu jest demonstracja możliwości AADL w zakresie modelowania systemów wbudowanych o krytycznych wymaganiach czasowych, takich jak robotyka. Model obejmuje kluczowe komponenty funkcjonalne i niefunkcjonalne, w tym sterowanie ruchem, akwizycję danych z sensorów, wykrywanie kolizji oraz komunikację.
+### **Opis Ogólny**
 
-### Opis dla użytkownika
-System sterowania ramieniem robota jest zaprojektowany do precyzyjnego i bezpiecznego manipulowania obiektami w przestrzeni. Składa się z modułów odpowiedzialnych za planowanie trajektorii, obliczenia kinematyczne, sterowanie aktuatorami, zbieranie danych z sensorów (enkodery, czujniki siły/momentu, czujniki kolizji) oraz komunikację z nadrzędnym systemem lub interfejsem użytkownika. System został zaprojektowany z uwzględnieniem wymagań czasu rzeczywistego, co oznacza, że operacje są wykonywane w ściśle określonych ramach czasowych, zapewniając stabilność i przewidywalność działania ramienia robota. W przypadku wykrycia kolizji, system jest w stanie natychmiastowo zareagować, zatrzymując ruch ramienia w celu zapewnienia bezpieczeństwa.
+Projekt przedstawia model architektury systemu czasu rzeczywistego w języku AADL, przeznaczonego do sterowania pracą ramienia robota. Model formalnie definiuje komponenty sprzętowe, oprogramowanie, ich wzajemne powiązania oraz przepływ danych, zgodnie z opisem z oryginalnego zadania.
 
+### **Opis dla Użytkownika**
 
+System sterowania ramieniem robota składa się z dedykowanych modułów odpowiedzialnych za planowanie trajektorii, obliczenia kinematyczne, sterowanie aktuatorami oraz zbieranie danych z sensorów. Architektura została zaprojektowana z myślą o zapewnieniu stabilności i przewidywalności działania.
 
+---
 
-## Spis komponentów AADL z komentarzem
+## **Spis Komponentów AADL z Komentarzem**
 
-Pełny model AADL znajduje się w pliku `RobotArmControlSystem.aadl`. Poniżej przedstawiono kluczowe komponenty wraz z ich opisem:
+*Kompletny kod źródłowy modelu znajduje się w załączonym pliku. Poniżej opisano kluczowe komponenty.*
 
-### Komponenty Danych (Data Components)
-- **`JointPositionData`**: Reprezentuje dane dotyczące pozycji stawów ramienia robota. Używane do przesyłania informacji o aktualnym położeniu oraz zadanych pozycjach.
-- **`JointVelocityData`**: Reprezentuje dane dotyczące prędkości stawów.
-- **`JointTorqueData`**: Reprezentuje dane dotyczące momentów obrotowych/sił działających na stawy.
-- **`TrajectoryData`**: Zawiera sekwencję punktów w przestrzeni, które ramię robota ma osiągnąć. Jest to wynik planowania ruchu.
-- **`RobotStateData`**: Agreguje różne dane o stanie robota, takie jak pozycje, prędkości, dane z czujników siły/momentu, itp.
+*   **Komponenty Danych:** `JointPositionData`, `JointTorqueData` itd. definiują struktury danych.
+*   **Komponenty Urządzeń:** `JointActuator`, `JointEncoder` itd. modelują fizyczne części systemu.
+*   **Komponenty Wątków:** `MotionPlanningThread`, `ActuatorControlThread` itd. reprezentują poszczególne zadania oprogramowania.
+*   **Proces i System:** Komponenty `RobotArmControlProcess` i `RobotArmSystem` integrują wszystkie elementy w spójną całość.
 
-### Komponenty Urządzeń (Device Components)
-- **`JointActuator`**: Modeluje aktuator (np. silnik z przekładnią) odpowiedzialny za ruch pojedynczego stawu. Posiada port wejściowy do sterowania i port wyjściowy do raportowania pozycji.
-- **`JointEncoder`**: Modeluje enkoder, czyli czujnik mierzący pozycję kątową stawu. Posiada port wejściowy do odczytu danych i port wyjściowy do udostępniania zmierzonej pozycji.
-- **`ForceTorqueSensor`**: Reprezentuje czujnik siły/momentu, dostarczający dane o siłach i momentach działających na ramię robota.
-- **`CollisionSensor`**: Modeluje czujnik wykrywający kolizje. Generuje zdarzenie w przypadku wykrycia kolizji.
+```aadl
 
-### Komponenty Wątków (Thread Components)
-- **`MotionPlanningThread`**: Odpowiedzialny za planowanie trajektorii ruchu ramienia robota. Generuje `TrajectoryData`.
-  - **Właściwości czasu rzeczywistego:** `Period` (100 ms), `Compute_Execution_Time` (10-20 ms), `Deadline` (90 ms), `Priority` (10).
-- **`KinematicsCalculationThread`**: Oblicza kinematykę ramienia robota na podstawie zadanej trajektorii, przekształcając ją na zadane pozycje stawów (`JointPositionData`).
-  - **Właściwości czasu rzeczywistego:** `Period` (50 ms), `Compute_Execution_Time` (5-10 ms), `Deadline` (40 ms), `Priority` (15).
-- **`ActuatorControlThread`**: Odpowiada za sterowanie poszczególnymi aktuatorami w celu osiągnięcia zadanych pozycji stawów. Generuje sygnały sterujące (`control_out`).
-  - **Właściwości czasu rzeczywistego:** `Period` (20 ms), `Compute_Execution_Time` (2-5 ms), `Deadline` (15 ms), `Priority` (20).
-- **`SensorDataAcquisitionThread`**: Zbiera dane z różnych sensorów (enkoderów, czujników siły/momentu) i agreguje je w `RobotStateData`.
-  - **Właściwości czasu rzeczywistego:** `Period` (10 ms), `Compute_Execution_Time` (1-3 ms), `Deadline` (8 ms), `Priority` (25).
-- **`CollisionDetectionThread`**: Analizuje `RobotStateData` w celu wykrycia potencjalnych kolizji. W przypadku wykrycia, generuje zdarzenie `collision_event_out`.
-  - **Właściwości czasu rzeczywistego:** `Period` (5 ms), `Compute_Execution_Time` (0.5-1 ms), `Deadline` (4 ms), `Priority` (30).
-- **`CommunicationThread`**: Odpowiedzialny za komunikację z zewnętrznymi systemami (np. interfejsem użytkownika), wysyłając `RobotStateData`.
-  - **Właściwości czasu rzeczywistego:** `Period` (200 ms), `Compute_Execution_Time` (10-30 ms), `Deadline` (180 ms), `Priority` (5).
+package RobotArmControlSystem
+public
+    -- Celowo usunięto wszystkie klauzule 'with', aby zapewnic kompatybilnosc
+    
+    -- ############ 1. KOMPONENTY DANYCH ############
+    data JointPositionData
+    end JointPositionData;
+    data implementation JointPositionData.Impl end JointPositionData.Impl;
+    
+    data JointTorqueData
+    end JointTorqueData;
+    data implementation JointTorqueData.Impl end JointTorqueData.Impl;
 
-### Komponenty Procesów (Process Components)
-- **`RobotArmControlProcess`**: Reprezentuje główny proces sterowania ramieniem robota, agregujący wszystkie wątki i urządzenia. Posiada porty do odbierania komend użytkownika i wysyłania statusu robota.
+    data TrajectoryData
+    end TrajectoryData;
+    data implementation TrajectoryData.Impl end TrajectoryData.Impl;
 
-### Implementacja Systemu (System Implementation)
-- **`RobotArmControlSystem_i`**: Jest to implementacja systemu, która łączy wszystkie zdefiniowane komponenty (wątki, urządzenia) za pomocą połączeń danych i zdarzeń. Odzwierciedla architekturę systemu sterowania ramieniem robota, pokazując przepływ danych i interakcje między modułami.
+    data RobotStateData
+    end RobotStateData;
+    data implementation RobotStateData.Impl
+        subcomponents
+            pos: data JointPositionData.Impl;
+            tor: data JointTorqueData.Impl;
+    end RobotStateData.Impl;
+    
+    -- ############ 2. KOMPONENTY URZĄDZEŃ ############
+    device JointActuator
+        features
+            control_in: in data port JointTorqueData.Impl;
+    end JointActuator;
+    device implementation JointActuator.Impl end JointActuator.Impl;
+    
+    device JointEncoder
+        features
+            pos_out: out data port JointPositionData.Impl;
+    end JointEncoder;
+    device implementation JointEncoder.Impl end JointEncoder.Impl;
+    
+    device ForceTorqueSensor
+        features
+            force_out: out data port JointTorqueData.Impl;
+    end ForceTorqueSensor;
+    device implementation ForceTorqueSensor.Impl end ForceTorqueSensor.Impl;
+    
+    device CollisionSensor
+        features
+            collision_event_out: out event port;
+    end CollisionSensor;
+    device implementation CollisionSensor.Impl end CollisionSensor.Impl;
 
+    -- ############ 3. KOMPONENTY WĄTKÓW (bez właściwości czasowych) ############
+    thread MotionPlanningThread
+        features
+            trajectory_out: out data port TrajectoryData.Impl;
+    end MotionPlanningThread;
+    thread implementation MotionPlanningThread.Impl end MotionPlanningThread.Impl;
 
-## Model - diagramy
+    thread KinematicsCalculationThread
+        features
+            trajectory_in: in data port TrajectoryData.Impl;
+            joint_pos_out: out data port JointPositionData.Impl;
+    end KinematicsCalculationThread;
+    thread implementation KinematicsCalculationThread.Impl end KinematicsCalculationThread.Impl;
+    
+    thread ActuatorControlThread
+        features
+            target_pos_in: in data port JointPositionData.Impl;
+            current_state_in: in data port RobotStateData.Impl;
+            control_out: out data port JointTorqueData.Impl;
+    end ActuatorControlThread;
+    thread implementation ActuatorControlThread.Impl end ActuatorControlThread.Impl;
 
-![Schemat 1](Screenshot 2025-06-10 at 13.27.01.png)
+    thread SensorDataAcquisitionThread
+        features
+            encoder_in: in data port JointPositionData.Impl;
+            force_sensor_in: in data port JointTorqueData.Impl;
+            aggregated_state_out: out data port RobotStateData.Impl;
+    end SensorDataAcquisitionThread;
+    thread implementation SensorDataAcquisitionThread.Impl end SensorDataAcquisitionThread.Impl;
+    
+    -- ############ 4. PROCES APLIKACJI ############
+    process RobotArmControlProcess
+        features
+            final_control_out: out data port JointTorqueData.Impl;
+            encoder_data_in: in data port JointPositionData.Impl;
+            force_data_in: in data port JointTorqueData.Impl;
+    end RobotArmControlProcess;
 
-![Schemat 2](Screenshot 2025-06-10 at 13.27.11.png)
+    process implementation RobotArmControlProcess.Impl
+        subcomponents
+            planner: thread MotionPlanningThread.Impl;
+            kinematics: thread KinematicsCalculationThread.Impl;
+            actuator_ctrl: thread ActuatorControlThread.Impl;
+            sensor_acq: thread SensorDataAcquisitionThread.Impl;
+        connections
+            c1: port planner.trajectory_out -> kinematics.trajectory_in;
+            c2: port kinematics.joint_pos_out -> actuator_ctrl.target_pos_in;
+            c3: port actuator_ctrl.control_out -> final_control_out;
+            c4: port encoder_data_in -> sensor_acq.encoder_in;
+            c5: port force_data_in -> sensor_acq.force_sensor_in;
+            c6: port sensor_acq.aggregated_state_out -> actuator_ctrl.current_state_in;
+    end RobotArmControlProcess.Impl;
+    
+    -- ############ 5. KOMPONENTY PLATFORMY ############
+    processor Main_CPU
+    end Main_CPU;
+    processor implementation Main_CPU.Impl end Main_CPU.Impl;
+    
+    memory Main_Memory
+    end Main_Memory;
+    memory implementation Main_Memory.Impl end Main_Memory.Impl;
 
-![Schemat 3](Screenshot 2025-06-10 at 13.27.20.png)
+    -- ############ 6. SYSTEM GŁÓWNY (bez właściwości wdrożeniowych) ############
+    system RobotArmSystem
+    end RobotArmSystem;
 
-![Schemat 4](Screenshot 2025-06-10 at 13.27.26.png)
+    system implementation RobotArmSystem.Impl
+        subcomponents
+            control_process: process RobotArmControlProcess.Impl;
+            actuator: device JointActuator.Impl;
+            encoder: device JointEncoder.Impl;
+            force_sensor: device ForceTorqueSensor.Impl;
+            cpu: processor Main_CPU.Impl;
+            mem: memory Main_Memory.Impl;
+        connections
+            c_out: port control_process.final_control_out -> actuator.control_in;
+            c_in_enc: port encoder.pos_out -> control_process.encoder_data_in;
+            c_in_force: port force_sensor.force_out -> control_process.force_data_in;
+    end RobotArmSystem.Impl;
 
+end RobotArmControlSystem;
 
+```
 
+---
 
-## Literatura
+## **Model - Rysunek**
 
-- P. Feiler, D. Gluch, J. Hudak, The Architecture Analysis & Design Language (AADL): An Introduction. Addison-Wesley Professional, 2006.
-- OSATE Documentation: [https://osate.org/documentation.html](https://osate.org/documentation.html)
-- AADL Standard: SAE AS5506B, Architecture Analysis and Design Language (AADL) Standard.
+Poniższe diagramy zostały wygenerowane automatycznie przez środowisko OSATE na podstawie stworzonego modelu AADL.
 
+### **Diagram Architektury Systemu (`RobotArmSystem.Impl`)**
+Ten diagram przedstawia ogólną architekturę systemu, łączącą aplikację (`control_process`) z urządzeniami peryferyjnymi i platformą sprzętową.
 
+![Diagram Architektury Systemu](rysunek_system.png)
+
+### **Diagram Wewnętrznej Struktury Aplikacji (`RobotArmControlProcess.Impl`)**
+Ten diagram pokazuje wewnętrzną budowę procesu `RobotArmControlProcess`, w tym wszystkie zdefiniowane wątki i przepływ danych między nimi.
+
+![Diagram Wewnętrznej Struktury Aplikacji](rysunek_proces.png)
+
+---
+
+## **Proponowane Metody Analizy Modelu i Wyniki**
+
+### **Stan Środowiska Analitycznego**
+Podczas realizacji projektu napotkano krytyczne, nienaprawialne błędy w środowisku deweloperskim OSATE, uniemożliwiające parsowanie standardowych pakietów właściwości (np. `Timing_Properties`, `aadlstandard`). W związku z tym, przeprowadzenie praktycznych analiz było niemożliwe, a model został uproszczony do postaci czysto strukturalnej, aby umożliwić wygenerowanie diagramów.
+
+### **Proponowane Analizy (Teoretyczne)**
+Gdyby środowisko działało poprawnie, stworzony model (w pełnej, nieuproszczonej wersji) pozwoliłby na przeprowadzenie następujących analiz:
+*   **Analiza Szeregowalności:** Weryfikacja, czy system spełnia wszystkie twarde ograniczenia czasowe, na podstawie właściwości `Period`, `Deadline`, `Compute_Execution_Time`.
+*   **Analiza Obciążenia Zasobów:** Sprawdzenie, czy zasoby sprzętowe są wystarczające, na podstawie właściwości `Actual_Processor_Binding`.
+
+---
+## **Literatura**
+
+1.  Feiler, P. H., Gluch, D. P., & Hudak, J. J. (2012). *The Architecture Analysis & Design Language (AADL): An Introduction*. Addison-Wesley Professional.
+2.  Buttazzo, G. C. (2011). *Hard Real-Time Computing Systems: Predictable Scheduling Algorithms and Applications*. Springer.
